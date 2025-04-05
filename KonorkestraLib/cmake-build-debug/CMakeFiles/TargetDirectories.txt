@@ -1,0 +1,3 @@
+/Users/jasser/IdeaProjects/Konorkestra/KonorkestraLib/cmake-build-debug/CMakeFiles/KonorkestraLib.dir
+/Users/jasser/IdeaProjects/Konorkestra/KonorkestraLib/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/jasser/IdeaProjects/Konorkestra/KonorkestraLib/cmake-build-debug/CMakeFiles/rebuild_cache.dir
