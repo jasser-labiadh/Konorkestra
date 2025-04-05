@@ -1,0 +1,16 @@
+syntax = "proto3";
+package dev.jasser;
+service HeartbeatService {
+  rpc SendHeartbeats(stream Heartbeat) returns (Ack);
+}
+
+message Heartbeat {
+  string uid = 1;
+  string cloud_name = 2;
+  int64 timestamp = 3; // Optional but useful
+}
+
+message Ack {
+  bool success = 1;
+
+}
