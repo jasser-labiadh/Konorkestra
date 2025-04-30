@@ -23,7 +23,7 @@ public class HeartBeatServiceImpl extends HeartbeatServiceGrpc.HeartbeatServiceI
             public void onNext(Heartbeat heartbeat) {
                 logManager.logInfo("Received: "+heartbeat.toString());
                 // persist to redis
-                // TODO: Push to MQ producer
+                // TODO: Listen to ket expiry
                 // here we don t care where the mq producer is we jsut have a config file
                 storage.saveHeartBeat(heartbeat.getNodeId(),String.valueOf(heartbeat.getTimestamp()));
                 mqProducer.send("analyze", heartbeat);
