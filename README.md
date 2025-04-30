@@ -1,4 +1,5 @@
-KONORKESTRA - Dynamic Configuration & Health Monitoring System
+![Image](https://github.com/user-attachments/assets/a1e5e72b-1dbb-4bab-8396-3b01d322d8b4)
+KONORKESTRA - Dynamic Configuration & Health Monitoring System (Note: This architecture is still evolving — this is just an initial brainstorm and a starting point for further development )
 
 Overview:
 KONORKESTRA is an ongoing project designed to manage dynamic configurations and node health monitoring for distributed systems. The system enables nodes to join a group of configurations, synchronize their settings, and handle configuration updates efficiently.
