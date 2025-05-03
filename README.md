@@ -1,4 +1,4 @@
-![Image](https://github.com/user-attachments/assets/a1e5e72b-1dbb-4bab-8396-3b01d322d8b4)
+![Image](https://github.com/user-attachments/assets/4a66d6b2-f586-4eb4-b595-1279b8528a3e)
 (Note: This architecture is still evolving — this is just an initial brainstorm and a starting point for further development )
 
 # KONORKESTRA
