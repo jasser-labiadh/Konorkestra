@@ -1,3 +1,5 @@
+![Image](https://github.com/user-attachments/assets/4a66d6b2-f586-4eb4-b595-1279b8528a3e)
+(This is the current architecture, which may evolve as additional components are developed in the near future.)
 # KONORKESTRA
 
 ## Dynamic Configuration & Health Monitoring for Distributed Systems
