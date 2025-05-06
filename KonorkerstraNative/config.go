@@ -1,73 +1,51 @@
 package KonerkestraNative
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
-	"syscall"
+	"time"
 )
 
-var configToPipe = make(map[string][]PipeInfo) // Map from config key to list of pipes
-
-type PipeInfo struct {
-	PipePath string `json:"pipe_path"`
-	Status   string `json:"status"`
-	Error    string `json:"error,omitempty"`
+type PipeRegistration struct {
+	PipePath   string   `json:"pipe_path"`
+	ConfigKeys []string `json:"config_keys"`
+	Status     string   `json:"status"`
+	Error      string   `json:"error,omitempty"`
 }
 
-var pipeInfo *PipeInfo
-
-// subscribe registers a process to listen for changes on a given configuration key
-func subscribe(configKey string) (string, error) {
-	// Create a new pipe for the subscribing process
-	if pipeInfo == nil {
-		path, err := generateUniqueFilePath()
-		if err != nil {
-			return "", err
-		}
-
-		err = syscall.Mkfifo(path, 0666)
-		if err != nil {
-			return "", fmt.Errorf("failed to create named pipe: %w", err)
-		}
-
-		pipeInfo = &PipeInfo{
-			PipePath: path,
-			Status:   "open",
-			Error:    "",
-		}
+func subscribe(data []byte) []byte {
+	connection, err := connect()
+	if err != nil {
+		return []byte("")
 	}
-
-	// Register the pipe for the given configuration key
-	configToPipe[configKey] = append(configToPipe[configKey], *pipeInfo)
-
-	// Return the pipe path so the subscribing process can use it
-	return pipeInfo.PipePath, nil
-}
-
-// handleConfigChange notifies all subscribed processes about a configuration change
-func handleConfigChange(configKey string, newData []byte) {
-	// Iterate over all pipes that are subscribed to this configuration
-	for _, pipe := range configToPipe[configKey] {
-		// Open the pipe and send the updated configuration data
-		f, err := os.OpenFile(pipe.PipePath, os.O_WRONLY, os.ModeNamedPipe)
-		if err != nil {
-			fmt.Println("Error opening pipe:", err)
-			continue
-		}
-
-		// Send the updated configuration as JSON
-		_, err = f.Write(newData)
-		if err != nil {
-			fmt.Println("Error writing to pipe:", err)
-		}
-		f.Close()
+	pipePath, err := generateUniqueFilePath()
+	if err != nil {
+		return []byte("")
 	}
+	jsonData := map[string]string{}
+	json.Unmarshal(data, &jsonData)
+	configList := []string{}
+	for k, _ := range jsonData {
+		configList = append(configList, k)
+	}
+	var pipeRegistration *PipeRegistration = &PipeRegistration{
+		PipePath:   pipePath,
+		ConfigKeys: configList,
+		Status:     "ok",
+		Error:      "",
+	}
+	data, _ = json.Marshal(pipeRegistration)
+	connection.Write(data)
+	return data
 }
-
-// generateUniqueFilePath generates a unique file path for the pipe based on the current process ID
+func getConfig(request []byte) (result []byte) {
+	// just getting configuration without subscribing to change
+}
 func generateUniqueFilePath() (string, error) {
 	dir := "/temp/konorkstraNative/"
 	pid := os.Getpid()
-	filePath := fmt.Sprintf("%s/%d.pid", dir, pid)
+	timestamp := time.Now().UnixNano()
+	filePath := fmt.Sprintf("%s/%d-%d", dir, pid, timestamp)
 	return filePath, nil
 }
