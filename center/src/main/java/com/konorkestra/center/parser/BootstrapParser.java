@@ -33,7 +33,7 @@ public class BootstrapParser implements Parser{
     public BootstrapParser(Collection<Parser> parsers) {
         this.parsers = new HashMap<>();
         for (Parser parser : parsers) {
-            this.parsers.put(parser.getHandledKey(), parser);
+            this.parsers.put(parser.getHandledKey().toLowerCase(), parser);
         }
         }
 

@@ -1,4 +1,11 @@
 package com.konorkestra.center.parser;
 
-public class GroupParser {
+import org.springframework.stereotype.Component;
+
+@Component
+public class GroupParser implements Parser {
+    @Override
+    public String getHandledKey() {
+        return "group";
+    }
 }

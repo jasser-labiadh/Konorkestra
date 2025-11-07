@@ -1,4 +1,11 @@
 package com.konorkestra.center.parser;
 
-public class PolicyParser {
+import org.springframework.stereotype.Component;
+
+@Component
+public class PolicyParser implements Parser{
+    @Override
+    public String getHandledKey() {
+        return "policy";
+    }
 }
