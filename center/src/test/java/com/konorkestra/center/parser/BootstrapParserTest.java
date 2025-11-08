@@ -1,4 +1,7 @@
 package com.konorkestra.center.parser;
+import com.konorkestra.center.model.ConfigSet;
+import com.konorkestra.center.model.Group;
+import com.konorkestra.center.model.Policy;
 import com.konorkestra.center.parser.exceptions.ParserNotFoundException;
 import com.konorkestra.center.parser.exceptions.ParsingException;
 import org.junit.jupiter.api.Assertions;
@@ -27,9 +30,12 @@ public class BootstrapParserTest {
         lenient().when(groupParser.getHandledKey()).thenReturn("groups");
         lenient().when(policyParser.getHandledKey()).thenReturn("policies");
         lenient().when(configSetParser.getHandledKey()).thenReturn("configsets");
-        lenient().when(groupParser.parse(any())).thenReturn(true);
-        lenient().when(policyParser.parse(any())).thenReturn(true);
-        lenient().when(configSetParser.parse(any())).thenReturn(true);
+        lenient().when(groupParser.getParsedType()).thenReturn((Class) List.class);
+        lenient().when(policyParser.getParsedType()).thenReturn((Class) List.class);
+        lenient().when(configSetParser.getParsedType()).thenReturn((Class) List.class);
+        lenient().when(groupParser.parse(any())).thenReturn(List.of(new Group()));
+        lenient().when(policyParser.parse(any())).thenReturn(List.of(new Policy()));
+        lenient().when(configSetParser.parse(any())).thenReturn(List.of(new ConfigSet()));
         bootstrapParser = new BootstrapParser(List.of(groupParser, policyParser, configSetParser));
     }
 
@@ -82,7 +88,7 @@ public class BootstrapParserTest {
             
     }) 
     void testParsingCorrectYaml(String yaml){
-        assertTrue(bootstrapParser.parse(yaml));
+        assertNotNull(bootstrapParser.parse(yaml));
     }
     @ParameterizedTest
     @ValueSource(strings = {

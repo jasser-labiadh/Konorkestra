@@ -1,9 +1,11 @@
 package com.konorkestra.center.parser;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
+import com.konorkestra.center.model.ConfigSet;
+import com.konorkestra.center.model.Group;
+import com.konorkestra.center.model.Policy;
+import com.konorkestra.center.model.SettingFile;
 import com.konorkestra.center.parser.exceptions.ParserNotFoundException;
 import com.konorkestra.center.parser.exceptions.ParsingException;
 import lombok.extern.slf4j.Slf4j;
@@ -13,37 +15,38 @@ import org.yaml.snakeyaml.Yaml;
 /**
  * BootstrapParser
  *
- * Entry point to parse a full YAML file. Delegates sections to corresponding parsers.
+ * Entry point to parse a full Setting file (YAML MVP). Delegates sections to corresponding parsers
+ * return a ConfigFile object for persistence as an atomic unit
  * 
- * YAML STRUCTURE -MVP-
- *          Groups:x
- *              // group definition and metadata
- *          Policies:
- *              // policy definition and metadata
- *          ConfigSet:
- *              // configSet definition and metadata
- * SEMANTICS ARE ENFORCED BY EACH PARSER THE IDEA ALSO IS TO DECOUPLE THINGS SO MORE COMPLEX THINGS LIKE PolicyParser evolve separately 
+ * YAML STRUCTURE -MVP- Groups, Policies and configSets
+ * 
  */
 @Component
 @Slf4j
-public class BootstrapParser implements Parser{
+public class BootstrapParser extends Parser<String, SettingFile>{
     private final Map<String, Parser> parsers;
-    private static final String HANDLEDKEY = "bootstrap";
+    private static final Class<SettingFile> PARSED_TYPE = SettingFile.class;
+    private static final String HANDLEDKEY = "";
+    private final Map<String, java.util.function.BiConsumer<SettingFile, Object>> assigners = new HashMap<>();
     @Autowired
     public BootstrapParser(Collection<Parser> parsers) {
         this.parsers = new HashMap<>();
         for (Parser parser : parsers) {
             this.parsers.put(parser.getHandledKey().toLowerCase(), parser);
         }
+        assigners.put("groups", (settingFile, val) -> settingFile.setGroups((List<Group>) val));
+        assigners.put("policies", (settingFile, val) -> settingFile.setPolicies((List<Policy>) val));
+        assigners.put("configsets", (settingFile, val) -> settingFile.setConfigSets((List<ConfigSet>) val));
         }
 
     /**
      * 
      * @param yamlContent
-     * @return true on success of parsing the whole content
+     * @return returns the SettingFile object after parsing
      */
-    public boolean parse(String yamlContent) {
+    public SettingFile parse(String yamlContent) {
         long start = System.currentTimeMillis();
+        SettingFile settingFile = new SettingFile();
         Yaml yaml = new Yaml();
         Object root = yaml.load(yamlContent);
         if (!(root instanceof Map)) {
@@ -62,16 +65,32 @@ public class BootstrapParser implements Parser{
                         +" Supported keys: " + parsers.keySet()
                 );
             }
-            parser.parse(entry.getValue());
+            Object parsedSection = parser.parse(entry.getValue());
+            java.util.function.BiConsumer<SettingFile, Object> assigner = assigners.get(entry.getKey().toLowerCase());
+            if(assigner != null){
+                Class<?> expectedType = parser.getParsedType();
+                if (!expectedType.isInstance(parsedSection)) {
+                    throw new ParsingException(
+                            "Parser returned wrong type for key: " + entry.getKey() +
+                                    ". Expected: " + expectedType.getSimpleName() +
+                                    ", but got: " + parsedSection.getClass().getSimpleName()
+                    );
+                }
+                assigner.accept(settingFile, parsedSection);
+            }
             log.debug("Parsed {}", entry.getKey().toLowerCase());
         }
         log.debug("Bootstrap file parsed successfully.");
         log.debug("Parsing took {} ms", System.currentTimeMillis() - start);
-        return true;
+        return settingFile;
     }
     
     @Override
     public String getHandledKey() {
         return HANDLEDKEY;
+    }
+    @Override
+    public Class<SettingFile> getParsedType() {
+        return PARSED_TYPE;
     }
 }
