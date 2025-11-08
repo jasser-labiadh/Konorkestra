@@ -1,10 +1,12 @@
 package com.konorkestra.center.model;
 import java.util.Map;
-public class ConfigSet {
+public class ConfigSet{
     private String uid;
     private Map<String,String> config;
 
-    public ConfigSet() {}
+    public ConfigSet() {
+        this.config = new java.util.HashMap<>();
+    }
     public ConfigSet(String uid, Map<String, String> config) {
         this.uid = uid;
         this.config = config;
