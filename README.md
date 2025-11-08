@@ -1,3 +1,4 @@
+![Konorkestra](docs/images/konorkestra.png)
 Konorkestra
 
 A universal system for live, intelligent configuration management and runtime reactivity across distributed environments.
