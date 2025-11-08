@@ -1,0 +1,29 @@
+# --------------------------------------------------------------------
+# POLICY DEFINITION
+# --------------------------------------------------------------------
+# This YAML defines a Policy for Konorkestra, describing how configuration
+# changes are rolled out to nodes in a distributed environment.
+#
+# Key concepts:
+# - strict-level: Defines the type of rollout.
+#     ALL      - Commit only after all nodes acknowledge.
+#     QUORUM   - Commit after a quorum of nodes acknowledge (use min_nodes_required).
+#     EVENTUAL - Commit immediately; nodes converge over time.
+#
+# - min_nodes_required: Only used for QUORUM, can be an absolute number or a percentage.
+#
+# Constraints and alerts are not part of the MVP.
+# --------------------------------------------------------------------
+
+uid: "policy_example_01"      # Unique identifier for this policy
+description: "Policy for rolling out configuration changes with quorum-based commit"  # Human-readable description
+
+# Rollout strictness determines when the system considers the transaction successful
+strict-level: "QUORUM"        # Options: ALL | QUORUM | EVENTUAL
+
+# Optional: minimum nodes/percentage for successful QUORUM commit
+min_nodes_required: 30%        # Accepts absolute number (e.g., 3) or percentage (e.g., 30%)
+
+# --------------------------------------------------------------------
+# End of Policy Definition
+# --------------------------------------------------------------------

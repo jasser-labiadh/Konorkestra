@@ -21,7 +21,7 @@ groups:
     configsets:
       - "configset1"
       - "configset2"
-    policy: "gradual"
+    policy: "quorum"
 
   - uid: "group2"
     description: "Staging group"
@@ -29,11 +29,18 @@ groups:
       - "configset1"
     policy: "quorum"
 
-policies:
-  - uid: "gradual"
-    description: "Gradually roll out updates"
-    max_concurrent_nodes: 5
+  - uid: "group3"
+    description: "Test group"
+    configsets:
+      - "configset2"
+    policy: "eventual"
 
+policies:
   - uid: "quorum"
     description: "Require minimum nodes to update"
-    min_nodes_required: 2
+    strict-level: "QUORUM"
+    min_nodes_required: 2   # Can be absolute number or percentage (e.g., 30%)
+
+  - uid: "eventual"
+    description: "Apply immediately, eventual consistency"
+    strict-level: "EVENTUAL"
