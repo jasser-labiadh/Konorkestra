@@ -1,0 +1,39 @@
+# examples/example-config.yaml
+# Example configuration for Konorkestra
+
+configsets:
+  - uid: "configset1"
+    description: "Database configuration"
+    configs:
+      max_connections: 100
+      enable_logging: true
+      connection_timeout: 30
+
+  - uid: "configset2"
+    description: "Feature toggles"
+    configs:
+      enable_feature_x: false
+      enable_feature_y: true
+
+groups:
+  - uid: "group1"
+    description: "Production group"
+    configsets:
+      - "configset1"
+      - "configset2"
+    policy: "gradual"
+
+  - uid: "group2"
+    description: "Staging group"
+    configsets:
+      - "configset1"
+    policy: "quorum"
+
+policies:
+  - uid: "gradual"
+    description: "Gradually roll out updates"
+    max_concurrent_nodes: 5
+
+  - uid: "quorum"
+    description: "Require minimum nodes to update"
+    min_nodes_required: 2
