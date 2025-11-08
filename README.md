@@ -1,46 +1,56 @@
-![Konorkestra](docs/images/konorkestra.png)
-Konorkestra
+![Konorkestra](docs/images/konor.png)
+# Konorkestra
 
-A universal system for live, intelligent configuration management and runtime reactivity across distributed environments.
+Konorkestra is a configuration orchestration system designed to make **configuration management in distributed environments straightforward, safe, and declarative**.
 
-⸻
+> **Note:** The project is under active development. Features and implementations may change over time. Design decisions and documentation are available in the `/docs` folder.
 
-Overview
+---
 
-Configuration management in modern distributed systems is often fragmented or tied to cloud providers. Konorkestra provides a declarative, self-sufficient orchestration framework that ensures distributed nodes consistently receive, validate, and react to configuration changes — without relying on external brokers or control planes.
+## Core Concepts
 
-Inspired by frameworks like Spring, Konorkestra lets developers declare what should happen, while the system safely handles how it happens. Applications can react to changes in real time, maintaining consistency from node-level state down to process-level configuration.
+Konorkestra revolves around three key concepts: **ConfigSet**, **Group**, and **Policy**.
 
-⸻
+- **ConfigSet**: A collection of configuration key-value pairs with identifying metadata.
+- **Group**: One or more `ConfigSet`s combined with a `Policy`. Nodes subscribe to groups to receive configuration updates.
+- **Policy**: Defines how configuration changes are applied (e.g., gradual rollout, quorum-based updates, constrained changes).
 
-Key Features
-•	Declarative Configuration: Define Groups, ConfigSets, and Policies for your nodes.
-•	Versioned Releases: Immutable updates that ensure traceability and auditability.
-•	Runtime Reactivity: Nodes automatically synchronize and react to configuration changes.
-•	Policy Enforcement: Gradual rollout, quorum-based updates, or all-at-once strategies.
-•	Extensible SDKs: Language-specific SDKs allow applications to consume configuration safely.
-•	Observability & Audit: Track which nodes/processes have seen each release for deterministic visibility.
+---
 
-⸻
+## How it Works
 
-Architecture (High-Level)
+1. **Node Subscription**  
+   Nodes (physical or virtual machines) subscribe to a `Group` using a pre-generated token. Once subscribed, they receive the current configuration and stay updated with changes in real-time.
 
-Center (Control Plane)
-•	Stores and versions Groups, ConfigSets, Policies, and Releases
-•	Evaluates rollout guards and orchestrates updates
-•	Provides CLI/API for automation and audit
+2. **Lightweight Agent**  
+   Each node runs a lightweight agent that acts as a local server for all processes on that node (containerized or not). Communication with processes happens via a local socket.
 
-Agent (Node)
-•	Pulls releases and applies updates atomically
-•	Synchronizes state with Center
-•	Tracks node/process visibility for audit
+3. **Process Integration**  
+   Processes can register callbacks or logic to execute when a configuration change occurs (e.g., reload a value, restart a service, run custom logic). This is done through a **language-level SDK**. The MVP targets **Java**, with plans for additional languages in the future.
 
-SDK
-•	Fetch and watch configuration changes
-•	Provide safe callbacks for application updates
+4. **Controlled Configuration Access**  
+   The agent uses a custom lightweight storage engine. Processes only access configuration through the agent—nothing is scattered or exposed directly. Failover, synchronization, and consistency are handled by the agent.
 
-⸻
+5. **Declarative Approach**  
+   All configurations and updates are defined declaratively. Konorkestra Central ensures atomicity, traceability, and safe application of configuration changes.
 
-License
+---
 
-MIT License
+## Goals
+
+- Provide a **reliable and predictable configuration system** for distributed nodes.
+- Ensure **atomic updates** and **runtime consistency** across nodes and processes.
+- Enable **developer-friendly integrations** via language SDKs.
+- Allow teams to **define policies and rules** for safe configuration changes.
+
+---
+
+## Documentation
+
+For detailed architecture, design decisions, and usage examples, see the `/docs` folder in this repository.
+
+---
+
+## Contributing
+
+Contributions are welcome! Feel free to reach out at **jasser@jasser.dev** with ideas, questions, or pull requests.
