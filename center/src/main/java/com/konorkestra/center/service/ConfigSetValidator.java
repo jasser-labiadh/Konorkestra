@@ -6,10 +6,10 @@ import org.springframework.stereotype.Component;
  * basically checks if the ConfigSet already exists --MVP
  */
 @Component
-public class ConfigSetValidator implements validator{
+public class ConfigSetValidator implements validator<String>{
     
     
-    public boolean validate(){
+    public boolean validate(String uid){
         return true;
     }
 }
