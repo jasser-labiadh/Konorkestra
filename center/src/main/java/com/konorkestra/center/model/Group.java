@@ -2,7 +2,7 @@ package com.konorkestra.center.model;
 
 import java.util.List;
 
-public class Group {
+public class Group{
     private String uid;
     private List<String> configsetUids; // references to ConfigSets
     private String policyUid;            // reference to Policy

@@ -1,5 +1,5 @@
 package com.konorkestra.center.service;
 
-public interface validator {
-    public boolean validate();
+public interface validator<T> {
+    public boolean validate(T type);
 }

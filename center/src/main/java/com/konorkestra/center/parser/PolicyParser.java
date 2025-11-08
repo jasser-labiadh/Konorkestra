@@ -3,7 +3,7 @@ package com.konorkestra.center.parser;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PolicyParser implements Parser{
+public abstract class PolicyParser extends Parser{
     @Override
     public String getHandledKey() {
         return "policy";
