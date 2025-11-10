@@ -1,0 +1,31 @@
+name: "Update production config"
+author: "example"
+description: "Increase max connections for production DB"
+
+type: "update_config"       # create_group | update_config | delete_config | node_join | revoke_token | etc.
+
+# Scope: target group, configset, config key, node, or token
+scope:
+  group: "production"        # optional depending on job type
+  configset: "db_config"     # optional
+  key: "max_connections"     # optional
+  node_id: "node-42"         # optional
+  token_id: "abc123"         # optional
+
+# Payload for jobs that carry data (config values, policies, etc.)
+payload:
+  key_values:
+    max_connections: 150
+    enable_logging: true
+  configsets: ["db_config", "feature_flags"]
+  policy: "QUORUM"
+
+# Execution strategy / policy
+strategy:
+  type: "BATCH"              # ALL | QUORUM | EVENTUAL | BATCH
+  batch_size: 2               # used only for BATCH
+  wait_interval: 30           # seconds, used only for BATCH
+  quorum: 0.7                 # used only for QUORUM strategy (percentage or number)
+  constraints:                # optional, only used for BATCH
+    cpu_usage: "<70"
+    memory_free: ">1024"
