@@ -36,6 +36,22 @@ Konorkestra revolves around three key concepts: **ConfigSet**, **Group**, and **
 
 ---
 
+## Core Architecture and Components
+
+Konorkestra is designed around the concept of **jobs**, where any operation beyond bootstrapping the central system is treated as a job.
+
+- **Job Dispatcher**: Validates incoming jobs and persists them. Clients see a job as “accepted” once this step is complete.  
+- **Job Scheduler**: Schedules jobs for execution while handling concurrency and locking resources when necessary.  
+- **Execution Engine**: Converts a job object into a dynamic execution plan composed of **redo-safe operations**. A “compiler” generates these plans to ensure deterministic, recoverable execution.  
+- **Storage Engine**: A custom storage engine underlies the system. Scaling Konorkestra requires swapping in a storage engine that supports **consensus and leader election**, enabling efficient multi-node deployments. Optimized for read-heavy workloads with low write frequency. UDP handles heartbeat/liveness checks, while TCP is used only for critical updates.  
+- **Transaction Manager**: Tracks all steps of every job to guarantee **smooth recovery** in case of crashes.
+
+**Deployment Vision**:  
+- MVP: Single-node, highly efficient, fully functional.  
+- Ultimate Edition: Enterprise-grade features, distributed support, and high-availability capabilities.
+
+---
+
 ## Goals
 
 - Provide a **reliable and predictable configuration system** for distributed nodes.
