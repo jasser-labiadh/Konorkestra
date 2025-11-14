@@ -12,11 +12,11 @@ public interface Persistable<T> {
     /**
      * Serialize to Protobuf Message.
      */
-    byte[] toProto();
+    byte[] serialize();
 
     /**
      * Deserialize from Protobuf bytes.
      * Typically implemented as static in concrete class.
      */
-    T fromProto(byte[] bytes);
+    T deserialize(byte[] bytes);
 }
