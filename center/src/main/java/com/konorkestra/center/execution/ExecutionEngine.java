@@ -1,5 +1,7 @@
 package com.konorkestra.center.execution;
 
+import com.konorkestra.center.execution.Exception.ExecutionException;
+import com.konorkestra.center.model.Executable;
 import com.konorkestra.center.model.Job;
 
 /**
@@ -13,10 +15,10 @@ public interface ExecutionEngine {
      * Execute a job according to its execution plan.
      * Should be thread-safe and handle idempotency.
      *
-     * @param job the job to execute
+     * @param executable the task to execute
      * @return true if execution succeeded, false otherwise
      */
-    boolean execute(Job job);
+    boolean execute(Executable executable) throws ExecutionException;
 
     /**
      * Optionally, shutdown the engine gracefully.

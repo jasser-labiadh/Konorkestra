@@ -5,7 +5,7 @@ pub enum Namespace {
     ConfigSet, // after joining a group we get these
     Runtime,  // every configuration and data related to the operations ( node metadata, job status, etc.)
 }
-//MVP implementation would be based on sled, maybe later on customized storage engine
+//MVP implementation would be based on sled, maybe later on customized storage engine.
 pub trait StorageEngine: Send + Sync + 'static {
     type Error: std::error::Error + Send + Sync + 'static;
 

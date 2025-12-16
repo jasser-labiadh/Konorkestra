@@ -27,7 +27,7 @@ public class BootstrapParser extends Parser<String, SettingFile>{
     private final Map<String, Parser> parsers;
     private static final Class<SettingFile> PARSED_TYPE = SettingFile.class;
     private static final String HANDLEDKEY = "";
-    private final Map<String, java.util.function.BiConsumer<SettingFile, Object>> assigners = new HashMap<>();
+    private final Map<String, java.util.function.BiC    onsumer<SettingFile, Object>> assigners = new HashMap<>();
     @Autowired
     public BootstrapParser(Collection<Parser> parsers) {
         this.parsers = new HashMap<>();
